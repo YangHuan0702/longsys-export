@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: plm-export
+  datasource:
+    dbcp2:
+      validation-query: SELECT 1 FROM DUAL
+    druid:
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      url: jdbc:oracle:thin:@//172.16.9.222:1521/orcl
+      username: PLM719M1129
+      password: PLM719M1129
+      initial-size: 5
+      min-idle: 5
+      max-active: 100
+      max-wait: 60000
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+
+server:
+  port: 8016
+
+
+mybatis:
+  config-location: mybatis-config.xml
+  mapper-locations: mapper/*Mapper.xml
