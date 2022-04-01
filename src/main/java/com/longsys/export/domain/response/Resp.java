@@ -1,6 +1,6 @@
 package com.longsys.export.domain.response;
 
-import com.longsys.export.constant.RespCodeEnum;
+import com.longsys.export.constant.benum.RespCodeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
