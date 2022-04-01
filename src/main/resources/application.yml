@@ -2,8 +2,7 @@ spring:
   application:
     name: plm-export
   datasource:
-    dbcp2:
-      validation-query: SELECT 1 FROM DUAL
+    validation-query: SELECT 1 FROM DUAL
     druid:
       driver-class-name: oracle.jdbc.driver.OracleDriver
       url: jdbc:oracle:thin:@//172.16.9.222:1521/orcl
@@ -21,10 +20,11 @@ spring:
       pool-prepared-statements: true
       max-pool-prepared-statement-per-connection-size: 20
 
+knife4j:
+  enable: true
 server:
   port: 8016
 
-
 mybatis:
-  config-location: mybatis-config.xml
-  mapper-locations: mapper/*Mapper.xml
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mapper/*Mapper.xml
