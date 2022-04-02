@@ -1,5 +1,6 @@
 package com.longsys.export.domain.empty;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -7,6 +8,7 @@ import lombok.Data;
  * @date 2022-03-29
  */
 @Data
+@AllArgsConstructor
 public class Column {
     /**
      * 字段名
@@ -22,5 +24,10 @@ public class Column {
      * 所属表名
      */
     private String tableName;
+
+
+    public static Column build(String column,String name,String tableName){
+        return new Column(column,name,tableName);
+    }
 
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.longsys.export.mapper.ColumnMapper">
+
+    <insert id="batchInsert" parameterType="com.longsys.export.domain.empty.Column">
+        INSERT INTO COLUMN (NAME,CNAME,TABLE_NAME) VALUE
+        <foreach collection="list" separator="," item="c">
+            (
+                #{c.name},
+                #{c.column},
+                #{c.tableName}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

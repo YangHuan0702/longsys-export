@@ -45,8 +45,23 @@ public class Resp<T> {
      * @param <T>  数据泛型
      * @return 统一响应
      */
-    public static <T> Resp success(T data) {
-        return new Resp(data, RespCodeEnum.SUCC);
+    public static <T> Resp<T> success(T data) {
+        return new Resp<T>(data, RespCodeEnum.SUCC);
+    }
+
+    public static Resp<Void> success() {
+        return success(null);
+    }
+
+    /**
+     * 异常信息
+     * @return 系统异常响应
+     */
+    public static Resp<Void> error(){
+        return new Resp<Void>(null, RespCodeEnum.ERROR);
+    }
+    public static Resp<Void> error(RespCodeEnum respCodeEnum){
+        return new Resp<Void>(null, respCodeEnum);
     }
 
 
