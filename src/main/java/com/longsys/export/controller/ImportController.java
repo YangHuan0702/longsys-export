@@ -1,6 +1,7 @@
 package com.longsys.export.controller;
 
 import com.longsys.export.constant.LogInfoConstant;
+import com.longsys.export.constant.benum.RespCodeEnum;
 import com.longsys.export.domain.response.Resp;
 import com.longsys.export.service.ImportService;
 import io.swagger.annotations.Api;
@@ -13,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import static com.longsys.export.domain.response.Resp.success;
 
 /**
  * 导入接口
@@ -42,8 +41,10 @@ public class ImportController {
         try {
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook(file.getInputStream());
             importService.insertTableInfoByXss(xssfWorkbook);
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            RespCodeEnum respCodeEnum = e instanceof Error ? RespCodeEnum.ERROR : RespCodeEnum.IMPORT_FAILURE;
             log.error(String.format(LogInfoConstant.API_ERROR_LOG, this.getClass().getName(), e.getMessage()));
+            return Resp.error(respCodeEnum);
         }
         return Resp.success();
     }

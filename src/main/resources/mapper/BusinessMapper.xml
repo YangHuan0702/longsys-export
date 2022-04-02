@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longsys.export.mapper.BusinessMapper">
+
+    <sql id="query">
+        <where>
+            <foreach collection="condition.keys" item="k" separator="and">
+                <if test="null != condition[k]">
+                    ${k} = ${condition[k]}
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <select id="commonSelect" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        SELECT ${columns} FROM ${tableName}
+        <include refid="query">
+        </include>
+    </select>
+</mapper>

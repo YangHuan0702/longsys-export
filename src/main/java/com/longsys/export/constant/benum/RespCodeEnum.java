@@ -21,7 +21,13 @@ public enum RespCodeEnum {
     /**
      * 403
      */
-    PERMISSION_E(403,"无权访问");
+    PERMISSION_E(403,"无权访问"),
+
+    /**
+     * 导入失败
+     */
+    IMPORT_FAILURE(1000,"导入失败")
+    ;
 
     /**
      * 响应码
