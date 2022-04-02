@@ -99,11 +99,18 @@
                         <!-- 主要区域 -->
                         <el-main>
                             <el-row>
-                                <el-col :span="4">
+                                <el-col :span="2">
                                     <div class="grid-content bg-purple">
-                                    <el-button plain  @click="addNode">
-                                        添加数据源
-                                    </el-button>
+                                        <el-button plain  @click="addNode">
+                                            添加数据源
+                                        </el-button>
+                                    </div>
+                                </el-col>
+                                <el-col :span="2">
+                                    <div class="grid-content bg-purple">
+                                        <el-button plain  @click="addNode">
+                                            导出
+                                        </el-button>
                                     </div>
                                 </el-col>
                             </el-row>
