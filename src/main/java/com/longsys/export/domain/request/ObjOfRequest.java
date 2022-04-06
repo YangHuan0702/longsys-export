@@ -24,11 +24,8 @@ public class ObjOfRequest {
     @ApiModelProperty(value = "左边节点")
     private String leftKey;
 
-    @ApiModelProperty(value = "右边字段")
-    private String rightColumn;
-
-    @ApiModelProperty(value = "右边节点")
-    private String rightKey;
+    @ApiModelProperty(value = "被关联字段")
+    private String groupColumn;
 
     @ApiModelProperty(value = "0:一对一/1：一对多")
     private int multi;

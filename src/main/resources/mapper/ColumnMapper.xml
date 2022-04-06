@@ -13,5 +13,16 @@
             )
         </foreach>
     </insert>
-
+    
+    <select id="listByColumnsAndTables" resultType="com.longsys.export.domain.empty.Column">
+        SELECT * FROM COLUMN WHERE column IN 
+        <foreach collection="columns" close=")" separator="," open="(" item="c">
+            #{c}
+        </foreach>
+        AND
+        TABLE_NAME IN 
+        <foreach collection="tables" item="t" open="(" separator="," close=")">
+            #{t}
+        </foreach>
+    </select>
 </mapper>

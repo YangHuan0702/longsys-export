@@ -1,19 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.longsys.export.mapper.BusinessMapper">
-
     <sql id="query">
         <where>
             <foreach collection="condition.keys" item="k" separator="and">
-                <if test="null != condition[k]">
-                    ${k} = ${condition[k]}
-                </if>
+                <choose>
+                    <when test="null != condition[k] and k.split('-').length > 1">
+                        ${k.split('-')[0]} IN
+                        <foreach collection="condition[k]" item="i" open="(" separator="," close=")">
+                            #{i}
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        ${k} = #{condition[k]}
+                    </otherwise>
+                </choose>
             </foreach>
+            AND WKAID != '3'
         </where>
     </sql>
 
     <select id="commonSelect" resultType="java.util.HashMap" parameterType="java.util.HashMap">
         SELECT ${columns} FROM ${tableName}
+        <include refid="query">
+        </include>
+    </select>
+
+
+    <select id="commonSelectObjOf" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        SELECT ID,ITEMID1,ITEMID2 FROM ${objofTableName}
         <include refid="query">
         </include>
     </select>

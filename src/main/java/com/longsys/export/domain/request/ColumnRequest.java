@@ -27,7 +27,7 @@ public class ColumnRequest {
     private String tableName;
 
     @ApiModelProperty(value = "查询条件")
-    private Map<String, String> params;
+    private Map<String, Object> params;
 
     @ApiModelProperty(value = "是否是主数据:0:否，1:是")
     private int isMaster;

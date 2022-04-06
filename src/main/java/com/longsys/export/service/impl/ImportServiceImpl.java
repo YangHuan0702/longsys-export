@@ -1,6 +1,6 @@
 package com.longsys.export.service.impl;
 
-import com.longsys.export.constant.benum.ImportExceptionEnum;
+import com.longsys.export.constant.benum.ExceptionEnum;
 import com.longsys.export.converter.TableInfoConverter;
 import com.longsys.export.domain.empty.Column;
 import com.longsys.export.mapper.ColumnMapper;
@@ -34,9 +34,9 @@ public class ImportServiceImpl implements ImportService {
 
     @Override
     public void insertTableInfoByXss(XSSFWorkbook xssfWorkbook) throws Exception {
-        ImportExceptionEnum.asser(xssfWorkbook == null, ImportExceptionEnum.XSS_NULL);
+        ExceptionEnum.asser(xssfWorkbook == null, ExceptionEnum.XSS_NULL);
         List<Column> columns = tableInfoConverter.convertByXss(xssfWorkbook);
         int r = columnMapper.batchInsert(columns);
-        ImportExceptionEnum.asser(r <= 0,ImportExceptionEnum.INSERT_ERROR);
+        ExceptionEnum.asser(r <= 0, ExceptionEnum.INSERT_ERROR);
     }
 }
