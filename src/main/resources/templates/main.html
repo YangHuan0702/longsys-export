@@ -74,7 +74,7 @@
                                 </el-submenu>
                             </el-submenu>
                             <el-menu-item index="3" disabled>消息中心</el-menu-item>
-                            <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
+                            <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">报表</a></el-menu-item>
                         </el-menu>
                     </el-header>
                     <!-- 头部结束 -->
@@ -101,6 +101,16 @@
                             <el-row>
                                 <el-col :span="2">
                                     <div class="grid-content bg-purple">
+
+                                        <el-upload
+                                                class="upload-demo"
+                                                action="https://jsonplaceholder.typicode.com/posts/">
+                                            <el-button plain>导入表信息</el-button>
+                                        </el-upload>
+                                    </div>
+                                </el-col>
+                                <el-col :span="2">
+                                    <div class="grid-content bg-purple">
                                         <el-button plain  @click="addNode">
                                             添加数据源
                                         </el-button>
@@ -122,7 +132,7 @@
                                                 <span>主数据源</span>
                                             </div>
                                             <div class="text item">
-                                                <el-link href="https://element.eleme.io" target="_blank">选择数据源</el-link>
+                                                <el-link @click="dialogTableVisible = true" target="_blank">选择数据源</el-link>
                                             </div>
                                             <div class="text item">
                                                 <el-link href="https://element.eleme.io" target="_blank">选择字段</el-link>
@@ -172,6 +182,18 @@
         </el-row>
     <el-container>
     </el-container>
+
+
+    <!-- 选择数据源 -->
+    <el-dialog title="数据源" :visible.sync="dialogTableVisible">
+        <el-table :data="gridData">
+            <el-table-column property="date" label="日期" width="150"></el-table-column>
+            <el-table-column property="name" label="姓名" width="200"></el-table-column>
+            <el-table-column property="address" label="地址"></el-table-column>
+        </el-table>
+    </el-dialog>
+
+
 </div>
 </body>
 <!-- import Vue before Element -->
@@ -186,7 +208,25 @@
                 activeName: '1',
                 nodes:[],
                 node_number:0,
-                visible: false
+                visible: false,
+                dialogTableVisible: false,
+                gridData: [{
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1518 弄'
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1518 弄'
+                }, {
+                    date: '2016-05-01',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1518 弄'
+                }, {
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1518 弄'
+                }],
             }
         },
         methods:{

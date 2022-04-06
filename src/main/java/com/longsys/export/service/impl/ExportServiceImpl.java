@@ -39,10 +39,10 @@ public class ExportServiceImpl implements ExportService {
     private final ObjOfFactory objOfFactory;
 
     @Autowired
-    public ExportServiceImpl(BusinessMapper businessMapper, ColumnMapper columnMapper, ObjOfFactory objOfFactory) {
+    public ExportServiceImpl(BusinessMapper businessMapper, ColumnMapper columnMapper) {
         this.businessMapper = businessMapper;
         this.columnMapper = columnMapper;
-        this.objOfFactory = objOfFactory;
+        this.objOfFactory = ObjOfFactory.getInstance();
     }
 
     @Override
