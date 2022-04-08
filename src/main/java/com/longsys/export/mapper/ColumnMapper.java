@@ -26,6 +26,13 @@ public interface ColumnMapper {
 
 
     /**
+     * 查询全部数据
+     * @return 全部数据
+     */
+    List<Column> list();
+
+
+    /**
      * 根据字段名与表名进行查询
      *
      * @param tables  表名

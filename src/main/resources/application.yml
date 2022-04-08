@@ -5,9 +5,9 @@ spring:
     validation-query: SELECT 1 FROM DUAL
     druid:
       driver-class-name: oracle.jdbc.driver.OracleDriver
-      url: jdbc:oracle:thin:@//172.16.9.222:1521/orcl
-      username: PLM719M1129
-      password: PLM719M1129
+      url: jdbc:oracle:thin:@//localhost:49161/XE
+      username: halosky
+      password: test
       initial-size: 20
       min-idle: 5
       max-active: 100

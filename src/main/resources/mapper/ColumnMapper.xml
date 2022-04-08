@@ -2,25 +2,33 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.longsys.export.mapper.ColumnMapper">
-
-    <insert id="batchInsert" parameterType="com.longsys.export.domain.empty.Column">
-        INSERT INTO COLUMN (NAME,CNAME,TABLE_NAME) VALUE
-        <foreach collection="list" separator="," item="c">
-            (
-                #{c.name},
-                #{c.column},
-                #{c.tableName}
-            )
+    <insert id="batchInsert" parameterType="com.longsys.export.domain.empty.Column" useGeneratedKeys="false">
+        INSERT INTO COLUMNS (ID,NAME,CNAME,TABLE_NAME,TABLE_DESC)
+        (
+        <foreach collection="list" separator=" UNION ALL " item="c">
+            SELECT
+            #{c.id},
+            #{c.name},
+            #{c.cname},
+            #{c.tableName},
+            #{c.tableDesc}
+            FROM DUAL
         </foreach>
+        )
+
     </insert>
-    
+
+    <select id="list" resultType="com.longsys.export.domain.empty.Column">
+        SELECT * FROM COLUMNS
+    </select>
+
     <select id="listByColumnsAndTables" resultType="com.longsys.export.domain.empty.Column">
-        SELECT * FROM COLUMN WHERE column IN 
+        SELECT * FROM COLUMNS WHERE cname IN
         <foreach collection="columns" close=")" separator="," open="(" item="c">
             #{c}
         </foreach>
         AND
-        TABLE_NAME IN 
+        TABLE_NAME IN
         <foreach collection="tables" item="t" open="(" separator="," close=")">
             #{t}
         </foreach>

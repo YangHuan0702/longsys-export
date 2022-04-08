@@ -27,6 +27,4 @@ public class ObjOfRequest {
     @ApiModelProperty(value = "被关联字段")
     private String groupColumn;
 
-    @ApiModelProperty(value = "0:一对一/1：一对多")
-    private int multi;
 }

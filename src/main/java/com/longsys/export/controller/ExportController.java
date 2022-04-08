@@ -43,16 +43,14 @@ public class ExportController {
 
     @PostMapping("/ddd")
     @ApiOperation(value = "导出信息（统一）")
-    public Resp<Void> export(@RequestBody ExportRequest exportRequest, HttpServletRequest request, HttpServletResponse response) {
+    public void export(@RequestBody ExportRequest exportRequest, HttpServletRequest request, HttpServletResponse response) {
         try {
             ExportBo export = exportService.export(exportRequest);
             ExcelUtil.downLoad(request,response,exportRequest.getFileName(),export);
         } catch (Throwable e) {
             RespCodeEnum respCodeEnum = e instanceof Error ? RespCodeEnum.ERROR : RespCodeEnum.IMPORT_FAILURE;
             log.error(String.format(LogInfoConstant.API_ERROR_LOG, this.getClass().getName(), e.getMessage()));
-            return Resp.error(respCodeEnum);
         }
-        return Resp.success();
     }
 
 }

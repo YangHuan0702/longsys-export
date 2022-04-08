@@ -4,17 +4,19 @@
     <sql id="query">
         <where>
             <foreach collection="condition.keys" item="k" separator="and">
-                <choose>
-                    <when test="null != condition[k] and k.split('-').length > 1">
-                        ${k.split('-')[0]} IN
-                        <foreach collection="condition[k]" item="i" open="(" separator="," close=")">
-                            #{i}
-                        </foreach>
-                    </when>
-                    <otherwise>
-                        ${k} = #{condition[k]}
-                    </otherwise>
-                </choose>
+                <if test="null != condition[k] and k != null">
+                    <choose>
+                        <when test="k.split('-').length > 1">
+                            ${k.split('-')[0]} IN
+                            <foreach collection="condition[k]" item="i" open="(" separator="," close=")">
+                                #{i}
+                            </foreach>
+                        </when>
+                        <otherwise>
+                            ${k} = #{condition[${k}]}
+                        </otherwise>
+                    </choose>
+                </if>
             </foreach>
             AND WKAID != '3'
         </where>

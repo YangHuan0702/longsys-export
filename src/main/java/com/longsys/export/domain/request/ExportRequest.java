@@ -19,9 +19,6 @@ public class ExportRequest {
     @ApiModelProperty(value = "导出文件名称")
     private String fileName;
 
-    @ApiModelProperty(value = "导出记录名称")
-    private String exportLogName;
-
     @ApiModelProperty(value = "导出备注")
     private String desc;
 

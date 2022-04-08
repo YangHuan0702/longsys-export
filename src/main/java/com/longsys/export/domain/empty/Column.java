@@ -1,5 +1,6 @@
 package com.longsys.export.domain.empty;
 
+import com.longsys.export.util.primaryKey.IDUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,9 +12,14 @@ import lombok.Data;
 @AllArgsConstructor
 public class Column {
     /**
+     * id
+     */
+    private Long id;
+
+    /**
      * 字段名
      */
-    private String column;
+    private String cname;
 
     /**
      * 字段名称
@@ -25,9 +31,12 @@ public class Column {
      */
     private String tableName;
 
+    /**
+     * 表名
+     */
+    private String tableDesc;
 
-    public static Column build(String column,String name,String tableName){
-        return new Column(column,name,tableName);
+    public static Column build(String cname,String name,String tableName,String tableDesc){
+        return new Column(IDUtil.getUniqueId(),cname,name,tableName,tableDesc);
     }
-
 }

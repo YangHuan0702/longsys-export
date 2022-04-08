@@ -57,10 +57,11 @@ public class TableInfoConverter implements Converter<Column> {
                 String column = row.get(ExcelConstant.TABLE_INFO_COLUMN);
                 String name = row.get(ExcelConstant.TBALE_INFO_NAME);
                 String tableName = row.get(ExcelConstant.TABLE_INFO_TABLE_NAME);
+                String tableDesc = row.get(ExcelConstant.TABLE_INFO_TABLE_DESC);
                 if (ParamsLogicUtil.validaStrArrayExistEmpty(column, name, tableName)) {
                     throw new NullPointerException(LogInfoConstant.EXCEL_NOT_ALLOWED_EMPTY_ROW);
                 }
-                columns.add(Column.build(column, name, tableName));
+                columns.add(Column.build(column, name, tableName,tableDesc));
             }
         }
         return columns;

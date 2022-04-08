@@ -84,7 +84,7 @@ public class ExportServiceImpl implements ExportService {
             LinkedHashMap<String, String> title = new LinkedHashMap<>();
             for (String orderColumn : orderColumns) {
                 String s = columnNames.get(orderColumn);
-                if (StringUtils.isEmpty(s)) {
+                if (!StringUtils.isEmpty(s)) {
                     title.put(orderColumn, s);
                 }
             }
@@ -110,7 +110,7 @@ public class ExportServiceImpl implements ExportService {
         Map<String, Map<String, String>> groupTableNameMap = new HashMap<>(columns.size() >> SpecialInfoConstant.ORDINARY_ONE);
         for (Column column : columns) {
             Map<String, String> cs = groupTableNameMap.computeIfAbsent(column.getTableName(), k -> new HashMap<>(SpecialInfoConstant.SIZE_16));
-            cs.put(column.getColumn(), column.getName());
+            cs.put(column.getCname(), column.getName());
         }
         return groupTableNameMap;
     }
@@ -126,6 +126,9 @@ public class ExportServiceImpl implements ExportService {
 
         // query params
         Map<String, Object> params = columnExportBo.getParams();
+        if(null == params){
+            params = new HashMap<>(SpecialInfoConstant.SIZE_1);
+        }
         params.put(SpecialInfoConstant.DEL, SpecialInfoConstant.STR_N_FALSE);
 
         if (null == columnExportBo.getObjOfRequest()) {

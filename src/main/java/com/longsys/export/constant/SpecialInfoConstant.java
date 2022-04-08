@@ -12,6 +12,9 @@ public class SpecialInfoConstant {
 
     public final static int ORDINARY_ONE = 1;
 
+    public final static int SIZE_0 = 0;
+
+    public static final int SIZE_1 = 1;
 
     public final static int SIZE_16 = 16;
 
