@@ -38,13 +38,6 @@ public class SpecialInfoConstant {
 
 
 
-
-
-
-
-
-
-
     public final static String ITEMID_IN_1 = "ITEMID1-IN";
 
     public final static String ITEMID_2 = "ITEMID2";

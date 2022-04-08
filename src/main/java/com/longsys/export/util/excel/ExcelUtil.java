@@ -30,7 +30,7 @@ import static com.longsys.export.constant.ExcelConstant.SHEET_NAME_FORMAT;
 @Slf4j
 public class ExcelUtil {
 
-    private static final String FILE_NAME_DATE_FOWMAT = "yyyyMMddHHmmss";
+    private static final String FILE_NAME_DATE_FOWMAT = "yyyy/MM/dd-HH/mm/ss";
 
     private ExcelUtil() {
     }
@@ -86,10 +86,8 @@ public class ExcelUtil {
 
         String dataStr = new SimpleDateFormat(FILE_NAME_DATE_FOWMAT).format(new Date());
 
-        // 这里设置一下让浏览器弹出下载提示框，而不是直接在浏览器中打开
-        response.setHeader(SpecialInfoConstant.CONTENT_DISP, String.format(SpecialInfoConstant.HEAD_DOWN, finalFileName + dataStr));
-
-
+        // 这里设置一下让浏览器弹出下载提示框，而不是直接在浏览器中打开 finalFileName + dataStr
+        response.setHeader(SpecialInfoConstant.CONTENT_DISP, String.format(SpecialInfoConstant.HEAD_DOWN, String.format(ExcelConstant.DOWNLOAD_FILE_NAME, finalFileName, dataStr)));
     }
 
 
@@ -131,7 +129,7 @@ public class ExcelUtil {
         excelWriter.write1(conversionRows, sheet);
     }
 
-    private static List<List<String>> getTitle(List<String> s){
+    private static List<List<String>> getTitle(List<String> s) {
         List<List<String>> r = new ArrayList<>();
         for (String a : s) {
             r.add(Collections.singletonList(a));

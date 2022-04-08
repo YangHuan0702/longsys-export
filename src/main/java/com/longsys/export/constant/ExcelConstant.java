@@ -21,4 +21,7 @@ public class ExcelConstant {
     public static final int SHEET_START_INDEX = 1;
 
     public static final int DEFAULT_HEAD_LINE_MUN = 0;
+
+
+    public static final String DOWNLOAD_FILE_NAME = "%s-%s";
 }
