@@ -118,7 +118,8 @@ public class ExportServiceImpl implements ExportService {
     private List<Map<String, Object>> getRows(ColumnExportBo columnExportBo, Map<String, ColumnExportBo> groupByNodeKey) throws Exception {
 
         // columns
-        List<String> targetColumns = columnExportBo.getColumns();
+        List<String> targetColumns = new ArrayList<>(columnExportBo.getColumns().size());
+        targetColumns.addAll(columnExportBo.getColumns());
         if (!targetColumns.contains(SpecialInfoConstant.ID)) {
             targetColumns.add(SpecialInfoConstant.ID);
         }

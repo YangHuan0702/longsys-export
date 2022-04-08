@@ -117,8 +117,7 @@ public class ExcelUtil {
     private static void buildSheet(ColumnExportBo node, LinkedHashMap<String, String> title, int sheetNo, ExcelWriter excelWriter) {
         Sheet sheet = new Sheet(sheetNo, ExcelConstant.DEFAULT_HEAD_LINE_MUN);
         sheet.setSheetName(String.format(SHEET_NAME_FORMAT, node.getKey(), node.getTableName()));
-        sheet.setHead(Collections.singletonList(new ArrayList<>(title.values())));
-
+        sheet.setHead(getTitle(new ArrayList<>(title.values())));
         List<List<Object>> conversionRows = new ArrayList<>();
         List<Map<String, Object>> rows = node.getRows();
 
@@ -132,5 +131,12 @@ public class ExcelUtil {
         excelWriter.write1(conversionRows, sheet);
     }
 
+    private static List<List<String>> getTitle(List<String> s){
+        List<List<String>> r = new ArrayList<>();
+        for (String a : s) {
+            r.add(Collections.singletonList(a));
+        }
+        return r;
+    }
 
 }

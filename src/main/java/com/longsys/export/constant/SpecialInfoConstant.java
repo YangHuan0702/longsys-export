@@ -16,6 +16,8 @@ public class SpecialInfoConstant {
 
     public static final int SIZE_1 = 1;
 
+    public static final int SIZE_3 = 3;
+
     public final static int SIZE_16 = 16;
 
     public final static int BOOL_INT_FALSE = 0;
@@ -27,6 +29,21 @@ public class SpecialInfoConstant {
     public final static String DEL = "DEL";
 
     public final static String ID = "ID";
+
+    public static final String WAKID = "WKAID";
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public final static String ITEMID_IN_1 = "ITEMID1-IN";
 

@@ -384,13 +384,12 @@
                 axios.post('/export/ddd', JSON.stringify(exportRequest), {
                     headers: {
                         "Content-Type": 'application/json;charset=UTF-8',
-                        "responseType": "blob",
                         "X-Requested-Accept": 'json',
-                    }
+                    },
+                    responseType: "blob",
                 })
                     .then(function (response) {
                         let blob = response.data;
-                        blob = new Blob(blob);
                         console.log(typeof blob);
                         let a = document.createElement("a");
                         //由于后台返回文件名称是通过response返回的
