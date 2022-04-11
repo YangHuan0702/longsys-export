@@ -1,30 +1,12 @@
 spring:
-  application:
-    name: plm-export
-  datasource:
-    validation-query: SELECT 1 FROM DUAL
-    druid:
-      driver-class-name: oracle.jdbc.driver.OracleDriver
-      url: jdbc:oracle:thin:@//localhost:49161/XE
-      username: halosky
-      password: test
-      initial-size: 20
-      min-idle: 5
-      max-active: 100
-      max-wait: 60000
-      test-on-borrow: false
-      test-on-return: false
-      test-while-idle: true
-      time-between-eviction-runs-millis: 60000
-      min-evictable-idle-time-millis: 300000
-      pool-prepared-statements: true
-      max-pool-prepared-statement-per-connection-size: 20
-
-knife4j:
-  enable: true
-server:
-  port: 8016
-
-mybatis:
-  config-location: classpath:mybatis-config.xml
-  mapper-locations: classpath:mapper/*Mapper.xml
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles:
+    active: dev
+  devtools:
+    restart:
+      enabled: true
