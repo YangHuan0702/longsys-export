@@ -27,4 +27,7 @@ public class ExportRequest {
 
     @ApiModelProperty(value = "导出数据模型")
     private List<ColumnRequest> dataModel;
+
+    @ApiModelProperty(value = "是否保存日志:0:否/1:s是")
+    private String isSave;
 }

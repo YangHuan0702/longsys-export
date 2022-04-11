@@ -1,21 +1,26 @@
 package com.longsys.export.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.longsys.export.constant.SpecialInfoConstant;
 import com.longsys.export.constant.benum.ExceptionEnum;
 import com.longsys.export.domain.bo.ColumnExportBo;
 import com.longsys.export.domain.bo.ExportBo;
 import com.longsys.export.domain.empty.Column;
+import com.longsys.export.domain.empty.ExportLog;
 import com.longsys.export.domain.request.ColumnRequest;
 import com.longsys.export.domain.request.ExportRequest;
 import com.longsys.export.mapper.BusinessMapper;
 import com.longsys.export.mapper.ColumnMapper;
+import com.longsys.export.mapper.ExportLogMapper;
 import com.longsys.export.pattern.ObjOfFactory;
 import com.longsys.export.service.ExportService;
+import com.longsys.export.util.primaryKey.IDUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -38,19 +43,41 @@ public class ExportServiceImpl implements ExportService {
 
     private final ObjOfFactory objOfFactory;
 
+    private final ExportLogMapper exportLogMapper;
+
     @Autowired
-    public ExportServiceImpl(BusinessMapper businessMapper, ColumnMapper columnMapper) {
+    public ExportServiceImpl(BusinessMapper businessMapper, ColumnMapper columnMapper,ExportLogMapper exportLogMapper) {
         this.businessMapper = businessMapper;
         this.columnMapper = columnMapper;
         this.objOfFactory = ObjOfFactory.getInstance();
+        this.exportLogMapper = exportLogMapper;
     }
 
     @Override
     public ExportBo export(ExportRequest request)throws Exception {
         ExceptionEnum.asser(null == request || CollectionUtils.isEmpty(request.getDataModel()),ExceptionEnum.EXPORT_ERROR);
-        return processor(request);
+        ExportBo processor = processor(request);
+        if(StringUtils.isNotEmpty(request.getIsSave()) && !request.getIsSave().equals(SpecialInfoConstant.STR_N_FALSE)){
+            insertLog(request);
+        }
+        return processor;
     }
 
+
+    @Async
+    public void insertLog(ExportRequest request){
+        ExportLog exportLog = new ExportLog();
+        exportLog.setId(IDUtil.getUniqueId());
+        exportLog.setETime(new Date());
+        ExportRequest r = new ExportRequest();
+        BeanUtils.copyProperties(request,r);
+        r.setIsSave(SpecialInfoConstant.STR_N_FALSE);
+        exportLog.setRequest(JSON.toJSONString(r));
+        exportLog.setFileName(request.getFileName());
+        exportLog.setUserName(request.getUsername());
+        exportLog.setExportDesc(request.getDesc());
+        exportLogMapper.insert(exportLog);
+    }
 
     public ExportBo processor(ExportRequest request) throws Exception {
 
@@ -153,6 +180,9 @@ public class ExportServiceImpl implements ExportService {
         String objOfTableName = columnExportBo.getObjOfRequest().getObjOfTableName();
 
         Map<String, Object> params = columnExportBo.getParams();
+        if(null == params){
+            params = new HashMap<>(SpecialInfoConstant.SIZE_1);
+        }
 
         // 左边节点关联表中所用字段
         String leftColumn = columnExportBo.getObjOfRequest().getLeftColumn();

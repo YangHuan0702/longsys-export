@@ -33,9 +33,7 @@ public class SpecialInfoConstant {
     public static final String WAKID = "WKAID";
 
 
-
-
-
+    public static final String EMPTY_STR = "";
 
 
     public final static String ITEMID_IN_1 = "ITEMID1-IN";
@@ -52,11 +50,9 @@ public class SpecialInfoConstant {
 
     public final static String TRUE = "TRUE";
 
-    public final static String ENCODE_ISO = "ISO8859-1";
+    public  final static String FIREFOX = "firefox";
 
-    public final static String ENCODE_UTF8 = "UTF8";
-
-    public final static String MSIE = "MSIE";
+    public final static String ENCODE_UTF8 = "UTF-8";
 
     public final static String MOZILLA = "Mozilla";
 

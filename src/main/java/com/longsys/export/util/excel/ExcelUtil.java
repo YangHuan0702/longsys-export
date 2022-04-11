@@ -16,6 +16,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -60,26 +61,21 @@ public class ExcelUtil {
      */
     public static void setReq(HttpServletRequest request, HttpServletResponse response, String fileName) throws Exception {
         final String userAgent = request.getHeader(SpecialInfoConstant.REQ_HEAD_AGENT);
-        //response.setContentType("application/vnd.ms-excel"); // 改成输出excel文件
+        // 改成输出excel文件
+        response.setContentType("application/vnd.ms-excel");
         response.setContentType(SpecialInfoConstant.RESP_CONTENTTYPE_DOWN);
 
 
         //设置请求头
-        String finalFileName = null;
-        // IE浏览器
-        if (StringUtils.contains(userAgent, SpecialInfoConstant.MSIE)) {
-            finalFileName = URLEncoder.encode(fileName, SpecialInfoConstant.ENCODE_UTF8);
-        }
-        // google,火狐浏览器
-        else if (StringUtils.contains(userAgent, SpecialInfoConstant.MOZILLA)) {
-            finalFileName = new String(fileName.getBytes(), SpecialInfoConstant.ENCODE_ISO);
-        }
-        // 其他浏览器
-        else {
-            finalFileName = URLEncoder.encode(fileName, SpecialInfoConstant.ENCODE_UTF8);
-        }
+        String finalFileName = URLEncoder.encode(fileName,SpecialInfoConstant.ENCODE_UTF8);
+        response.setCharacterEncoding(SpecialInfoConstant.ENCODE_UTF8);
+//        if (StringUtils.contains(userAgent, SpecialInfoConstant.FIREFOX) || StringUtils.contains(userAgent, SpecialInfoConstant.MOZILLA)) {
+//            response.setCharacterEncoding(SpecialInfoConstant.ENCODE_UTF8);
+//            finalFileName = new String(fileName.getBytes(), StandardCharsets.ISO_8859_1);
+//        }else{
+//            finalFileName = URLEncoder.encode(fileName,SpecialInfoConstant.ENCODE_UTF8);
+//        }
 
-        //开始下载标识
         Cookie cookie = new Cookie(SpecialInfoConstant.LOAD_HIDE, SpecialInfoConstant.TRUE);
         cookie.setPath(SpecialInfoConstant.SLASH);
         response.addCookie(cookie);
@@ -87,7 +83,8 @@ public class ExcelUtil {
         String dataStr = new SimpleDateFormat(FILE_NAME_DATE_FOWMAT).format(new Date());
 
         // 这里设置一下让浏览器弹出下载提示框，而不是直接在浏览器中打开 finalFileName + dataStr
-        response.setHeader(SpecialInfoConstant.CONTENT_DISP, String.format(SpecialInfoConstant.HEAD_DOWN, String.format(ExcelConstant.DOWNLOAD_FILE_NAME, finalFileName, dataStr)));
+        String fn = String.format(ExcelConstant.DOWNLOAD_FILE_NAME, finalFileName, dataStr);
+        response.setHeader(SpecialInfoConstant.CONTENT_DISP, String.format(SpecialInfoConstant.HEAD_DOWN, new String(fn.getBytes(),StandardCharsets.ISO_8859_1) ));
     }
 
 
@@ -120,9 +117,12 @@ public class ExcelUtil {
         List<Map<String, Object>> rows = node.getRows();
 
         for (Map<String, Object> row : rows) {
+            if (null == row) {
+                continue;
+            }
             List<Object> r = new ArrayList<>();
             for (String s : title.keySet()) {
-                r.add(row.get(s));
+                r.add(fillInBlank(row.get(s)));
             }
             conversionRows.add(r);
         }
@@ -135,6 +135,11 @@ public class ExcelUtil {
             r.add(Collections.singletonList(a));
         }
         return r;
+    }
+
+
+    private static Object fillInBlank(Object val) {
+        return null == val ? SpecialInfoConstant.EMPTY_STR : val;
     }
 
 }

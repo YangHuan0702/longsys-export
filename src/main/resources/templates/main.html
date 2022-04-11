@@ -91,15 +91,19 @@
                 <el-container>
                     <!-- 右边导出记录 开始-->
                     <el-aside width="400px">
-                        <el-collapse v-model="activeName" accordion>
-                            <el-collapse-item title="聂洪秀 零部件导出" name="1">
-                                <div>与现实生活一致：与现实生活的流程、逻辑保持一致，遵循用户习惯的语言和概念；</div>
-                                <div>在界面中一致：所有的元素和结构需保持一致，比如：设计样式、图标和文本、元素的位置等。</div>
-                            </el-collapse-item>
-                            <el-collapse-item title="薛孟女 电子物料数据导出" name="2">
-                                <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-                                <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
-                            </el-collapse-item>
+                        <el-collapse>
+                            <div v-for="(exportLog,i) in exportLogs">
+                                <el-collapse-item :title="exportLog.fileName" :name="exportLog.id">
+                                    <el-descriptions class="margin-top" :title="exportLog.userName" :column="2" size="mini">
+                                        <el-descriptions-item label="导出时间">{{exportLog.exportDateTime}}</el-descriptions-item>
+                                        <el-descriptions-item label="导出人">{{exportLog.userName}}</el-descriptions-item>
+                                        <el-descriptions-item label="导出描述">{{exportLog.exportDesc}}</el-descriptions-item>
+                                        <template slot="extra">
+                                            <el-button size="mini" @click="downByLog(exportLog)">下载</el-button>
+                                        </template>
+                                    </el-descriptions>
+                                </el-collapse-item>
+                            </div>
                         </el-collapse>
                     </el-aside>
                     <!-- 右边导出记录 开始-->
@@ -114,8 +118,6 @@
                                     <el-upload
                                             class="upload-demo"
                                             action="/import/importTableInfo"
-                                            onSuccess="importSuccess"
-                                            onError="importErrorInfo"
                                     >
                                         <el-button plain>导入表信息</el-button>
                                     </el-upload>
@@ -238,7 +240,7 @@
 
                     <!-- 选择查询条件开始 -->
                     <el-dialog title="配置查询条件" :visible.sync="dialogQueryParamsVisible">
-                        <el-form>
+                        <el-form height="250">
                             <div v-for="(column,i) in currentTableColumns">
                                 <el-form-item :label="column.name" label-width="120px">
                                     <el-input v-model="column.val" autocomplete="off"></el-input>
@@ -297,6 +299,16 @@
                             <el-form-item label="您的大名" label-width="120px">
                                 <el-input v-model="exportData.username" autocomplete="off"></el-input>
                             </el-form-item>
+                            <el-form-item label="是否保存该日志" label-width="120px">
+                                <el-switch
+                                        v-model="exportData.isSave"
+                                        active-color="#13ce66"
+                                        inactive-color="#ff4949"
+                                        active-value="1"
+                                        inactive-value="0"
+                                >
+                                </el-switch>
+                            </el-form-item>
                         </el-form>
                         <div slot="footer" class="dialog-footer">
                             <el-button @click="dialogExportFormVisible = false">取 消</el-button>
@@ -337,7 +349,9 @@
                 columnData: [],
                 columnCache: [],
                 leftColumns: [],
-                exportData: {},
+                exportData: {
+                    isSave: '0'
+                },
                 currentNode: {
                     table: {
                         cs: [
@@ -356,32 +370,23 @@
                 dialogObjOfFormVisible: false,
                 currentProcessorNodeKey: '',
                 tableData: [],
+                exportLogs:[],
                 form: {
                     leftKey: "",
                     leftColumn: "",
                     groupColumn: "",
-                    objOfTableName: ""
+                    objOfTableName: "",
                 },
             }
         },
         mounted() {
             this.initNode();
             this.initTableInfo();
+            this.initExportLogs();
         },
         methods: {
-            submitExportRequest() {
-                if (this.nodes.length === 1 && (this.nodes[0].table === undefined || this.nodes[0].table == null)) {
-                    this.$message.error('请先完成主节点信息~');
-                    return;
-                }
-                let columnReqs = this.getColumnsReq();
-                let exportRequest = {};
-                exportRequest.fileName = this.exportData.fileName;
-                exportRequest.desc = this.exportData.desc;
-                exportRequest.username = this.exportData.username;
-                exportRequest.dataModel = columnReqs;
-
-                axios.post('/export/ddd', JSON.stringify(exportRequest), {
+            downByLog(exportLog){
+                axios.post('/export/ddd', exportLog.request, {
                     headers: {
                         "Content-Type": 'application/json;charset=UTF-8',
                         "X-Requested-Accept": 'json',
@@ -389,14 +394,16 @@
                     responseType: "blob",
                 })
                     .then(function (response) {
+
+                        console.log(exportLog);
+
                         let blob = response.data;
                         console.log(typeof blob);
                         let a = document.createElement("a");
                         //由于后台返回文件名称是通过response返回的
                         //因此需要从response headers中content-disposition响应头中获取文件名称fileName，如上图所示
                         let headers = response.headers;
-                        let fileName = headers["content-disposition"];
-                        fileName = fileName.split('=')[1]
+                        let fileName = exportLog.fileName + ".xlsx";
 
                         //download是a标签的一个属性，可以自定义文件名称
                         a.download = fileName;
@@ -408,6 +415,63 @@
                     })
                     .catch(function (error) {
                         console.log("------------------------");
+                    });
+            },
+            initExportLogs(){
+                let _this = this;
+                axios.get('/export/exportLogs')
+                    .then(function (response) {
+                        let exportLogs = response.data.data;
+                        for(let i = 0;i< exportLogs.length;i++){
+                            _this.exportLogs.push(exportLogs[i]);
+                        }
+                    })
+                    .catch(function (error) {
+                        this.$message.error('获取导出日志失败了哦~');
+                    });
+            },
+            submitExportRequest() {
+                console.log(this.exportData);
+                if (this.nodes.length === 1 && (this.nodes[0].table === undefined || this.nodes[0].table == null)) {
+                    this.$message.error('请先完成主节点信息~');
+                    return;
+                }
+                let columnReqs = this.getColumnsReq();
+                let exportRequest = {};
+                exportRequest.fileName = this.exportData.fileName;
+                exportRequest.desc = this.exportData.desc;
+                exportRequest.username = this.exportData.username;
+                exportRequest.isSave = this.exportData.isSave;
+                exportRequest.dataModel = columnReqs;
+
+                let _this= this;
+                axios.post('/export/ddd', JSON.stringify(exportRequest), {
+                    headers: {
+                        "Content-Type": 'application/json;charset=UTF-8',
+                        "X-Requested-Accept": 'json',
+                    },
+                    responseType: "blob",
+                })
+                    .then(function (response) {
+                        console.log("------------------------");
+                        console.log(_this.exportData);
+                        let blob = response.data;
+                        console.log(typeof blob);
+                        let a = document.createElement("a");
+                        //由于后台返回文件名称是通过response返回的
+                        //因此需要从response headers中content-disposition响应头中获取文件名称fileName，如上图所示
+                        let headers = response.headers;
+                        let fileName = _this.exportData.fileName + ".xlsx";
+
+                        //download是a标签的一个属性，可以自定义文件名称
+                        a.download = fileName;
+
+                        a.href = URL.createObjectURL(blob);
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    })
+                    .catch(function (error) {
                     });
             },
             getColumnsReq() {
@@ -425,9 +489,10 @@
                     c.columns = columns;
 
                     if (node.params !== undefined && node.params.length > 0) {
-                        let params = new Map();
+                        let params = {};
                         node.params.forEach((item, index) => {
-                            params.set(item.cname, item.val);
+                            // params.set(item.cname, item.val);
+                            params[item.cname] = item.val;
                         });
                         c.params = params;
                     }
@@ -484,24 +549,38 @@
                     this.$message.error('请先设置表信息哦~');
                     return;
                 }
-                if (node.params === undefined || node.params === null) {
-                    let queryParams = [];
-                    for (let i = 0; i < node.table.cs.length; i++) {
-                        let c = node.table.cs[i];
-                        let param = {};
-                        param.cname = c.cname;
-                        param.name = c.name;
-                        param.val = "";
-                        queryParams.push(param);
-                    }
-                    this.currentTableColumns = queryParams;
-                } else {
-                    this.currentTableColumns = node.params;
+                // if (node.params === undefined || node.params === null) {
+                let queryParams = [];
+                for (let i = 0; i < node.table.cs.length; i++) {
+                    let c = node.table.cs[i];
+                    let param = {};
+                    param.cname = c.cname;
+                    param.name = c.name;
+                    param.val = this.setParamVal(node, c.cname);
+                    queryParams.push(param);
                 }
+                this.currentTableColumns = queryParams;
+                // } else {
+                //     this.currentTableColumns = node.params;
+                // }
                 this.dialogQueryParamsVisible = true;
+            },
+            setParamVal(node, cname) {
+                let val = "";
+                if (null !== node.params && undefined !== node.params) {
+                    for (let i = 0; i < node.params.length; i++) {
+                        let param = node.params[i];
+                        if (param.cname === cname && param.val !== undefined && param.val !== '') {
+                            val = param.val;
+                            break;
+                        }
+                    }
+                }
+                return val;
             },
             initTableInfo() {
                 let _this = this;
+                this.tableData = [];
                 axios.get('/info/tables')
                     .then(function (response) {
                         let tables = response.data.data;
@@ -555,6 +634,7 @@
                 this.dialogDataTableColumnVisible = false;
             },
             selectDataSource(dataNodeKey) {
+                this.initTableInfo();
                 this.dialogDataTableVisible = true;
                 this.currentProcessorNodeKey = dataNodeKey;
             },

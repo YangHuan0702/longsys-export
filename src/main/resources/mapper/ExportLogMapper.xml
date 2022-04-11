@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longsys.export.mapper.ExportLogMapper">
+
+    <sql id="query">
+        <where>
+            <if test="params.id != null and params.id != ''">
+                AND ID = #{params.id}
+            </if>
+            <if test="params.fileName != null and params.fileName != ''">
+                AND file_name LIKE CONCAT(CONCAT('%',#{params.fileName}),'%')
+            </if>
+            <if test="params.exportDesc != null and params.exportDesc != ''">
+                AND export_desc LIKE CONCAT(CONCAT('%',#{exportDesc}),'%')
+            </if>
+            <if test="params.request != null and params.request != ''">
+                AND request LIKE CONCAT(CONCAT('%',#{request}),'%')
+            </if>
+            <if test="params.userName != null and params.userName != ''">
+                AND user_name LIKE CONCAT(CONCAT('%',#{userName}),'%')
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="false" parameterType="com.longsys.export.domain.empty.ExportLog">
+        INSERT INTO EXPORT_LOG
+                ("id",
+                 "file_name",
+                 "export_desc",
+                 "request",
+                 "user_name",
+                 "e_time")
+        VALUES (#{exportLog.id},
+                #{exportLog.fileName},
+                #{exportLog.exportDesc},
+                #{exportLog.request},
+                #{exportLog.userName},
+                #{exportLog.eTime})
+    </insert>
+
+    <select id="selectByParams" resultType="com.longsys.export.domain.empty.ExportLog">
+        SELECT * FROM EXPORT_LOG
+        <include refid="query">
+        </include>
+    </select>
+</mapper>
