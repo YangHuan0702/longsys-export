@@ -63,8 +63,6 @@ public class ExportServiceImpl implements ExportService {
         return processor;
     }
 
-
-    @Async
     public void insertLog(ExportRequest request){
         ExportLog exportLog = new ExportLog();
         exportLog.setId(IDUtil.getUniqueId());
